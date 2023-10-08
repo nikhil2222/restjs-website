@@ -5,9 +5,9 @@ import { Repository } from "typeorm";
 export declare class PostService {
     private readonly repo;
     constructor(repo: Repository<Post>);
-    create(createPostDto: CreatePostDto): string;
+    create(createPostDto: CreatePostDto): Promise<import("typeorm").InsertResult>;
     findAll(): Promise<Post[]>;
-    findOne(id: number): string;
-    update(id: number, updatePostDto: UpdatePostDto): string;
-    remove(id: number): string;
+    findOne(id: number): Promise<Post>;
+    update(id: number, updatePostDto: UpdatePostDto): Promise<import("typeorm").UpdateResult>;
+    remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

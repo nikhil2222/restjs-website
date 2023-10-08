@@ -21,20 +21,26 @@ let PostService = class PostService {
     constructor(repo) {
         this.repo = repo;
     }
-    create(createPostDto) {
-        return 'This action adds a new post';
+    async create(createPostDto) {
+        const slug = createPostDto.title.split(" ").join('_').toLowerCase();
+        const mainImageUrl = "";
+        return await this.repo.insert({ ...createPostDto, slug, mainImageUrl });
     }
     async findAll() {
         return await this.repo.find();
     }
-    findOne(id) {
-        return `This action returns a #${id} post`;
+    async findOne(id) {
+        const post = await this.repo.findOneBy({ id });
+        if (!post) {
+            throw new common_1.BadRequestException('Post not found');
+        }
+        return post;
     }
-    update(id, updatePostDto) {
-        return `This action updates a #${id} post`;
+    async update(id, updatePostDto) {
+        return await this.repo.update(id, updatePostDto);
     }
-    remove(id) {
-        return `This action removes a #${id} post`;
+    async remove(id) {
+        return await this.repo.delete(id);
     }
 };
 exports.PostService = PostService;

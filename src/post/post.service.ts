@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from "@nestjs/typeorm";
@@ -9,23 +9,29 @@ import { Repository } from "typeorm";
 export class PostService {
   constructor(@InjectRepository(Post) private readonly repo:Repository<Post>) {
   }
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  async create(createPostDto: CreatePostDto) {
+    const slug =  createPostDto.title.split(" ").join('_').toLowerCase();
+    const mainImageUrl = "";
+    return await this.repo.insert({...createPostDto,slug,mainImageUrl});
   }
 
   async findAll() {
     return await this.repo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    const post =  await this.repo.findOneBy({id});
+    if(!post) {
+      throw new BadRequestException('Post not found');
+    }
+    return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, updatePostDto: UpdatePostDto) {
+    return await this.repo.update(id,updatePostDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number) {
+    return await this.repo.delete(id);
   }
 }
