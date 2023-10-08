@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import {User} from "src/auth/entities/user.entity"
 import { Category } from "../../category/entities/category.entity";
+import slugify from "slugify";
 @Entity('posts')
 export class Post {
   @PrimaryGeneratedColumn()
@@ -15,8 +16,8 @@ export class Post {
   createdOn: Date;
   @Column({type:'timestamp', default:()=>'CURRENT_TIMESTAMP'})
   modifiedOn: Date;
-  @Column()
-  mainImageUrl: string;
+  // @Column({default:'google.com'})
+  // mainImageUrl: string;
 
   @Column()
   userId:number;
@@ -38,4 +39,12 @@ export class Post {
     referencedColumnName:'id'
   })
   category: Category;
+
+  @BeforeInsert()
+  slugifyPost(){
+    this.slug = slugify(this.title.substr(0,20),{
+      lower:true,
+      replacement:'_'
+    })
+  }
 }

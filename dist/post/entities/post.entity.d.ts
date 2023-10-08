@@ -7,9 +7,9 @@ export declare class Post {
     slug: string;
     createdOn: Date;
     modifiedOn: Date;
-    mainImageUrl: string;
     userId: number;
     categoryId: number;
     user: User;
     category: Category;
+    slugifyPost(): void;
 }

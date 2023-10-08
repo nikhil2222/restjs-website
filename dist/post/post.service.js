@@ -22,9 +22,11 @@ let PostService = class PostService {
         this.repo = repo;
     }
     async create(createPostDto) {
-        const slug = createPostDto.title.split(" ").join('_').toLowerCase();
-        const mainImageUrl = "";
-        return await this.repo.insert({ ...createPostDto, slug, mainImageUrl });
+        const post = new post_entity_1.Post();
+        post.userId = 1;
+        Object.assign(post, createPostDto);
+        this.repo.create(post);
+        return await this.repo.save(post);
     }
     async findAll() {
         return await this.repo.find();

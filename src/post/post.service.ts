@@ -10,9 +10,13 @@ export class PostService {
   constructor(@InjectRepository(Post) private readonly repo:Repository<Post>) {
   }
   async create(createPostDto: CreatePostDto) {
-    const slug =  createPostDto.title.split(" ").join('_').toLowerCase();
-    const mainImageUrl = "";
-    return await this.repo.insert({...createPostDto,slug,mainImageUrl});
+    // const slug =  createPostDto.title.split(" ").join('_').toLowerCase();
+    const post=new Post();
+    post.userId=1;
+    Object.assign(post,createPostDto);
+
+    this.repo.create(post);
+    return await this.repo.save(post);
   }
 
   async findAll() {
