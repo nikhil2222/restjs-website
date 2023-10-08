@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {User} from "src/auth/entities/user.entity"
+import { Category } from "../../category/entities/category.entity";
 @Entity('posts')
 export class Post {
   @PrimaryGeneratedColumn()
@@ -17,4 +18,24 @@ export class Post {
   @Column()
   mainImageUrl: string;
 
+  @Column()
+  userId:number;
+
+  @Column({default:3})
+  categoryId:number;
+
+  @ManyToOne( ()=> User , (user)=>user.posts,
+    {eager:true} )
+  @JoinColumn({
+    name:'uerId',
+    referencedColumnName:'id'
+  })
+  user:User;
+
+  @ManyToOne(()=>Category, (cat)=>cat.post, {eager:true})
+  @JoinColumn({
+    name:'categoryId',
+    referencedColumnName:'id'
+  })
+  category: Category;
 }
